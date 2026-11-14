@@ -1,4 +1,4 @@
-name: Build APK
+name: CI
 
 on: [push]
 
@@ -6,18 +6,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Build with Buildozer
-        uses: snipsco/buildozer-action@v1
-        env:
-          TITLE: "Free Pro Photo Editor"
-          PACKAGE_NAME: "freeprophotoeditor"
+      - uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          args: android debug
-
-      - name: Upload APK artifact
+          python-version: '3.10'
+          
+      - name: Install Buildozer dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev libffi-dev
+          pip install --upgrade pip
+          pip install buildozer cython
+          
+      - name: Build APK with Buildozer
+        run: buildozer -v android debug
+        
+      - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
           name: package
