@@ -9,15 +9,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-
       - name: Build with Buildozer
-        uses: ghatano/buildozer-action@v1
+        uses: snipsco/buildozer-action@v1
+        env:
+          TITLE: "Free Pro Photo Editor"
+          PACKAGE_NAME: "freeprophotoeditor"
         with:
-          command: buildozer -v android debug
+          args: android debug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v2
